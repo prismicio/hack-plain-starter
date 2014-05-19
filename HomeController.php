@@ -17,7 +17,7 @@ class HomeController extends GetController {
   use StandardPage;
 
   protected function getTitle(): string {
-    return 'Hack Plain Starter';
+    return 'Hack Plain Starter - All documents';
   }
 
   protected function renderMain(): :xhp {
