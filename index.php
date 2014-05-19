@@ -11,4 +11,4 @@
 
 require_once 'HomeController.php';
 
-HomeController::go($_GET);
+HomeController::go($_GET, $_COOKIE);

@@ -3,7 +3,7 @@
         "This file locks the dependencies of your project to a known state",
         "Read more about it at http://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file"
     ],
-    "hash": "e6eefd957e21cc9dd88b0c5ba868ba5f",
+    "hash": "e9e8a049d6966bd0d8950a784e791de7",
     "packages": [
         {
             "name": "guzzle/guzzle",
@@ -121,12 +121,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/srenault/hack-kit.git",
-                "reference": "68543051dddf92850b86e239b8b1e2e6aacba8cf"
+                "reference": "8b539bc0c53d5a92cc6e5102117e2fe2b2db036b"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/srenault/hack-kit/zipball/68543051dddf92850b86e239b8b1e2e6aacba8cf",
-                "reference": "68543051dddf92850b86e239b8b1e2e6aacba8cf",
+                "url": "https://api.github.com/repos/srenault/hack-kit/zipball/8b539bc0c53d5a92cc6e5102117e2fe2b2db036b",
+                "reference": "8b539bc0c53d5a92cc6e5102117e2fe2b2db036b",
                 "shasum": ""
             },
             "require": {
@@ -154,7 +154,7 @@
                 "Apache 2 license"
             ],
             "description": "Hack development kit for prismic.io",
-            "time": "2014-05-19 09:46:58"
+            "time": "2014-05-19 15:17:49"
         },
         {
             "name": "symfony/event-dispatcher",

@@ -1,28 +1,38 @@
 <?hh // strict
-/**
- * Copyright (c) 2014, Facebook, Inc.
- * All rights reserved.
- *
- * This source code is licensed under the BSD-style license found in the
- * LICENSE file in the root directory of this source tree. An additional grant
- * of patent rights can be found in the PATENTS file in the same directory.
- *
- */
 
 require_once $_SERVER['DOCUMENT_ROOT'].'/core/controller/init.php';
 require_once $_SERVER['DOCUMENT_ROOT'].'/core/controller/standard-page/init.php';
+require_once $_SERVER['DOCUMENT_ROOT'].'/core/routes/init.php';
 require_once $_SERVER['DOCUMENT_ROOT'].'/vendor/hhvm/xhp/src/init.php';
 
 class HomeController extends GetController {
-  use StandardPage;
+    use StandardPage;
 
-  protected function getTitle(): string {
-    return 'Hack Plain Starter - All documents';
-  }
+    protected function getTitle(): string {
+        return 'Hack Plain Starter - All documents';
+    }
 
-  protected function renderMain(): :xhp {
-    return <div>
-        MAIN
-    </div>;
-  }
+    protected function renderMain(): :xhp {
+        $ctx = parent::getContext();
+        $documents = $ctx->getApi()->forms()->at('everything')->ref($ctx->getRef())->submit();
+
+        $found = "No documents found";
+        if($documents->count() == 1) {
+            $found = "One document found";
+        } else if($documents->count() > 1) {
+            $found = $documents->count() . " documents found";
+        }
+
+        $list = <ul />;
+        foreach($documents as $doc) {
+            $href = Routes::detail($doc->getId(), $doc->getSlug(), $ctx->getRef());
+            $link = <a href={$href}>{$doc->getSlug()}</a>;
+            $list->appendChild(<li>{$link}</li>);
+        }
+
+        return <div>
+        <h2>{$found}</h2>
+        {$list}
+        </div>;
+    }
 }

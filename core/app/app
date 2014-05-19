@@ -1,0 +1,6 @@
+  /home/sre/www/hack-plain-starter/core/app:
+  total used in directory 16 available 55894660
+  drwxr-xr-x 2 sre sre 4096 May 19 17:19 .
+  drwxr-xr-x 8 sre sre 4096 May 19 17:19 ..
+  -rw-r--r-- 1 sre sre  532 May 19 16:16 App.php
+  -rw-r--r-- 1 sre sre   43 May 19 14:37 init.php
