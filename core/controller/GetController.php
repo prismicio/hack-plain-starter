@@ -21,7 +21,7 @@ abstract class GetController extends Controller {
         $controller = new static($request, $ctx);
         echo "<!DOCTYPE html>";
         $head = $controller->getHead();
-        $body = $controller->render();
+        $body = $controller->render($ctx);
         echo (string)$head;
         echo (string)$body;
     }

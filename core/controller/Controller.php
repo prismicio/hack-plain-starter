@@ -19,7 +19,7 @@ abstract class Controller {
   abstract protected function getCSS(): Set<string>;
   abstract protected function getJS(): Set<string>;
   abstract protected function getTitle(): string;
-  abstract protected function render(): :xhp;
+  abstract protected function render(Context $ctx): :xhp;
 
   final protected function getHead(): :xhp {
     $css = $this->getCSS()->toVector()->map(

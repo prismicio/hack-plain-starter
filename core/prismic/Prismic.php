@@ -6,6 +6,7 @@ require_once $_SERVER['DOCUMENT_ROOT'].'/core/request/init.php';
 require_once $_SERVER['DOCUMENT_ROOT'].'/vendor/prismic/hack-sdk/src/init.php';
 
 use \Prismic\Api;
+use \Prismic\Document;
 
 final class Prismic {
 
@@ -17,6 +18,25 @@ final class Prismic {
         } else {
             throw new Exception("Please provide prismic endpoint url in the configuration file");
         }
+    }
+
+    public static function fulltext(Context $ctx, string $terms): ImmMap<Document> {
+        return  $ctx->getApi()
+                   ->forms()
+                   ->at('everything')
+                   ->query('[[:d = fulltext(document, "' . $terms . '")]]')
+                   ->ref($ctx->getRef())
+                   ->submit();
+    }
+
+    public static function getDocument(Context $ctx, string $id): ?Document {
+        $results = $ctx->getApi()
+                   ->forms()
+                   ->at('everything')
+                   ->query('[[:d = at(document.id, "'. $id .'")]]')
+                   ->ref($ctx->getRef())
+                   ->submit();
+        return $results->get(0);
     }
 
     public static function buildContext(Request $request): Context

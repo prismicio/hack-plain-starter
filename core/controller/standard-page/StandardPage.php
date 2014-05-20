@@ -1,13 +1,6 @@
 <?hh // strict
-/**
- * Copyright (c) 2014, Facebook, Inc.
- * All rights reserved.
- *
- * This source code is licensed under the BSD-style license found in the
- * LICENSE file in the root directory of this source tree. An additional grant
- * of patent rights can be found in the PATENTS file in the same directory.
- *
- */
+
+require_once $_SERVER['DOCUMENT_ROOT'].'/core/routes/init.php';
 
 trait StandardPage {
   require extends Controller;
@@ -33,6 +26,15 @@ trait StandardPage {
     })->addAll($this->getExtraJS());
   }
 
+  final private function renderSearch(?string $ref): :xhp {
+      $action = Routes::search($ref);
+      return
+          <form action="{$action}" method="post">
+            <input type="text" name="q" />
+            <input type="submit" value="Search" />
+          </form>;
+  }
+
   final private function renderToolbar(): :xhp {
     return
       <div id="toolbar">
@@ -40,12 +42,13 @@ trait StandardPage {
       </div>;
   }
 
-  final protected function render(): :xhp {
+  final protected function render(Context $ctx): :xhp {
     return
      <div>
        <header>
          {$this->renderToolbar()}
        </header>
+         {$this->renderSearch($ctx->getRef())}
        <div class="main">
          {$this->renderMain()}
        </div>

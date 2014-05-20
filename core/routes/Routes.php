@@ -16,40 +16,40 @@ class Routes
         return $protocol . '://' . $host;
     }
 
-    public static function index(?string $maybeRef = null): string
+    public static function index(?string $ref = null): string
     {
         $parameters = Map {};
-        if (!is_null($maybeRef)) {
-            $parameters->set('ref', $maybeRef);
+        if (!is_null($ref)) {
+            $parameters->set('ref', $ref);
         }
         $queryString = (string)http_build_query($parameters);
 
         return self::baseUrl() . '/index.php?' . $queryString;
     }
 
-    public static function detail(string $id, string $slug, ?string $maybeRef = null): string
+    public static function detail(string $id, string $slug, ?string $ref = null): string
     {
         $parameters = Map::fromArray(array(
             "id" => $id,
             "slug" => $slug
         ));
-        if (!is_null($maybeRef)) {
-            $parameters->set('ref', $maybeRef);
+        if (!is_null($ref)) {
+            $parameters->set('ref', $ref);
         }
         $queryString = (string)http_build_query($parameters);
 
-        return self::baseUrl() . '/detail.php?' . $queryString;
+        return self::baseUrl() . '/detail?' . $queryString;
     }
 
-    public static function search(?string $maybeRef = null) : string
+    public static function search(?string $ref = null) : string
     {
         $parameters = Map {};
-        if (!is_null($maybeRef)) {
-            $parameters->set('ref', $maybeRef);
+        if (!is_null($ref)) {
+            $parameters->set('ref', $ref);
         }
         $queryString = (string)http_build_query($parameters);
 
-        return self::baseUrl() . '/search.php?' . $queryString;
+        return self::baseUrl() . '/search?' . $queryString;
     }
 
     public static function signin(): string
