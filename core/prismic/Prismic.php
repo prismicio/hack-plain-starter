@@ -20,7 +20,7 @@ final class Prismic {
         }
     }
 
-    public static function fulltext(Context $ctx, string $terms): ImmMap<Document> {
+    public static function fulltext(Context $ctx, string $terms): ImmVector<Document> {
         return  $ctx->getApi()
                    ->forms()
                    ->at('everything')
