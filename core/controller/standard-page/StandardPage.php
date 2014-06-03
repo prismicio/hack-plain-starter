@@ -35,7 +35,7 @@ trait StandardPage {
           </form>;
   }
 
-  final private function renderToolbar(Context $ctx): :xhp {
+  final private function renderToolbar(Context $ctx, Request $request): :xhp {
 
 
       $refNotFound = $ctx->getApi()->refs()->filter($ref ==> $ref->getRef() == $ctx->getRef())->isEmpty();
@@ -57,6 +57,19 @@ trait StandardPage {
           return $option;
       })->toArray();
 
+
+      $extraParams = <span></span>;
+
+      $id = $request->getParams()->get('id');
+      if($id !== null) {
+          $extraParams->appendChild(<input type="hidden" name="id" value={$id} />);
+      }
+
+      $slug = $request->getParams()->get('slug');
+      if($slug != null) {
+          $extraParams->appendChild(<input type="hidden" name="slug" value={$slug} />);
+      }
+
       return
           <div id="toolbar">
             <div id="toolbar">
@@ -68,6 +81,7 @@ trait StandardPage {
                     {$exceptMaster}
                   </optgroup>
                 </select>
+                {$extraParams->getChildren()}
               </form>
             </div>
           </div>;
@@ -81,11 +95,11 @@ trait StandardPage {
     }
   }
 
-  final protected function render(Context $ctx): :xhp {
+  final protected function render(Context $ctx, Request $request): :xhp {
     return
      <div>
        <header>
-         {$this->renderToolbar($ctx)}
+         {$this->renderToolbar($ctx, $request)}
          <hr/>
          {$this->renderSearch($ctx->getRef())}
        </header>

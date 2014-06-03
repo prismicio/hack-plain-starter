@@ -76,7 +76,7 @@ final class Prismic {
     }
 
     public static function buildContext(Request $request): Context {
-        $permanentToken = App::config('prismic.token');
+        $permanentToken = App::config('token');
         $accessToken = $request->getCookies()->get('ACCESS_TOKEN');
         $token = !is_null($accessToken) ? $accessToken : $permanentToken;
         $token = !is_null($token) ? (string)$token : null;
