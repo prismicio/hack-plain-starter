@@ -54,25 +54,28 @@ class Routes
 
     public static function signin(): string
     {
-        return self::baseUrl() . '/signin.php';
+        return self::baseUrl() . '/signin';
     }
 
-    public static function authCallback(?string $maybeCode = null, ?string $maybeRedirectUri = null): string
+    public static function oauthCallback(?string $maybeCode = null, ?string $referer = null): string
     {
         $parameters = Map {};
+
         if (!is_null($maybeCode)) {
             $parameters->set('code', $maybeCode);
         }
-        if (!is_null($maybeRedirectUri)) {
-            $parameters->set('redirect_uri', $maybeRedirectUri);
+
+        if (!is_null($referer)) {
+            $parameters->set('redirect_uri', $referer);
         }
+
         $queryString = (string)http_build_query($parameters);
 
-        return self::baseUrl() . '/oauthCallback.php?' .$queryString;
+        return self::baseUrl() . '/oauth_callback?' .$queryString;
     }
 
     public static function signout(): string
     {
-        return self::baseUrl() . '/signout.php';
+        return self::baseUrl() . '/signout';
     }
 }

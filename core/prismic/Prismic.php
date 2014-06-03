@@ -3,6 +3,7 @@
 require_once $_SERVER['DOCUMENT_ROOT'].'/vendor/autoload.php';
 require_once $_SERVER['DOCUMENT_ROOT'].'/core/app/init.php';
 require_once $_SERVER['DOCUMENT_ROOT'].'/core/request/init.php';
+require_once $_SERVER['DOCUMENT_ROOT'].'/core/routes/init.php';
 require_once $_SERVER['DOCUMENT_ROOT'].'/vendor/prismic/hack-sdk/src/init.php';
 
 use \Prismic\Api;
@@ -20,19 +21,37 @@ final class Prismic {
         }
     }
 
+    public static function callback(): string
+    {
+        $maybeReferer = Map::fromArray(getallheaders())->get('Referer');
+        return Routes::oauthCallback(null, !is_null($maybeReferer) ? $maybeReferer : Routes::index());
+    }
+
     public static function oauthInitiateEndpoint(Context $ctx, string $scope = "master+releases"): ?string {
         $clientId = App::config('clientId');
-        $clientSecret = App::config('clientSecret');
-        if ($clientId !== null && $clientSecret !== null) {
+        if ($clientId !== null) {
             $params = array(
                 "client_id" => $clientId,
-                "redirect_uri" => $clientSecret,
+                "redirect_uri" => self::callback(),
                 "scope" => $scope
             );
-            return http_build_query($params);
+            $baseURL = $ctx->getApi()->oauthInitiateEndpoint();
+            return $baseURL . "?" .(string)http_build_query($params);
         } else {
             return null;
         }
+    }
+
+    public static function oauthTokenEndpointParams(string $code): array<string, mixed> {
+        $clientId = App::config('clientId');
+        $clientSecret = App::config('clientSecret');
+        return array(
+            "grant_type" => array('authorization_code'),
+            "code" => $code,
+            "redirect_uri" => Prismic::callback(),
+            "client_id" => App::config("clientId"),
+            "client_secret" => App::config("clientSecret")
+        );
     }
 
     public static function fulltext(Context $ctx, string $terms): ImmVector<Document> {

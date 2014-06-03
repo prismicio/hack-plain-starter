@@ -9,6 +9,14 @@
  *
  */
 
-require_once 'SigninController.php';
+require_once $_SERVER['DOCUMENT_ROOT'].'/core/prismic/init.php';
 
-SigninController::go($_GET, $_COOKIE);
+$request = new Request(Map::fromArray($_GET)->toImmMap(), Map::fromArray($_COOKIE)->toImmMap());
+$ctx = Prismic::buildContext($request);
+$oauthInitiateEndpoint = Prismic::oauthInitiateEndpoint($ctx);
+if($oauthInitiateEndpoint !== null) {
+    header('Location: ' . $oauthInitiateEndpoint, false, 301);
+} else {
+    header('HTTP/1.1 400 Bad Request', true, 400);
+    exit('Bad Request');
+}

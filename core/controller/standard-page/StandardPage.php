@@ -42,6 +42,14 @@ trait StandardPage {
       </div>;
   }
 
+  final private function renderFooter(Context $ctx): :xhp {
+    if(!$ctx->hasPrivilegedAccess()) {
+        return <a href={Routes::signin()}>Sign in to preview changes</a>;
+    } else {
+        return <a href={Routes::signout()}>Signout</a>;
+    }
+  }
+
   final protected function render(Context $ctx): :xhp {
     return
      <div>
@@ -52,6 +60,9 @@ trait StandardPage {
        <div class="main">
          {$this->renderMain()}
        </div>
+       <footer>
+         {$this->renderFooter($ctx)}
+       </footer>
      </div>;
   }
 }
