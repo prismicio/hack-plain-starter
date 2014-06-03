@@ -3,7 +3,7 @@
 require_once $_SERVER['DOCUMENT_ROOT'].'/core/controller/init.php';
 require_once $_SERVER['DOCUMENT_ROOT'].'/core/prismic/init.php';
 require_once $_SERVER['DOCUMENT_ROOT'].'/core/controller/standard-page/init.php';
-require_once $_SERVER['DOCUMENT_ROOT'].'/vendor/hhvm/xhp/src/init.php';
+require_once $_SERVER['DOCUMENT_ROOT'].'/lib/hhvm/xhp/src/init.php';
 
 class DetailController extends GetController {
     use StandardPage;
@@ -27,8 +27,7 @@ class DetailController extends GetController {
             $document = Prismic::getDocument($ctx, $documentId);
             if($document) {
                 $html = $document->asHtml($ctx->getLinkResolver());
-                $article = new :article(array(), array($html));
-                return $article;
+                return <p>{HTML($html)}</p>;
             }
         }
         return <p>Not found !</p>;

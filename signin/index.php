@@ -9,6 +9,6 @@
  *
  */
 
-require_once 'SearchController.php';
+require_once 'SigninController.php';
 
-SearchController::go($_GET, $_COOKIE);
+SigninController::go($_GET, $_COOKIE);

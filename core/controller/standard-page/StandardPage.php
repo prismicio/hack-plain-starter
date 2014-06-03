@@ -29,7 +29,7 @@ trait StandardPage {
   final private function renderSearch(?string $ref): :xhp {
       $action = Routes::search($ref);
       return
-          <form action="{$action}" method="post">
+          <form action={$action} method="get">
             <input type="text" name="q" />
             <input type="submit" value="Search" />
           </form>;

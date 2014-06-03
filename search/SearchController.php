@@ -3,7 +3,7 @@
 require_once $_SERVER['DOCUMENT_ROOT'].'/core/controller/init.php';
 require_once $_SERVER['DOCUMENT_ROOT'].'/core/prismic/init.php';
 require_once $_SERVER['DOCUMENT_ROOT'].'/core/controller/standard-page/init.php';
-require_once $_SERVER['DOCUMENT_ROOT'].'/vendor/hhvm/xhp/src/init.php';
+require_once $_SERVER['DOCUMENT_ROOT'].'/lib/hhvm/xhp/src/init.php';
 
 class SearchController extends GetController {
     use StandardPage;
@@ -37,6 +37,7 @@ class SearchController extends GetController {
             }
 
             return <div>
+            <h1>Search for '{$terms}'</h1>
             <h2>{$found}</h2>
             {$list}
             </div>;

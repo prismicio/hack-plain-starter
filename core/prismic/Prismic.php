@@ -20,6 +20,21 @@ final class Prismic {
         }
     }
 
+    public static function oauthInitiateEndpoint(Context $ctx, string $scope = "master+releases"): ?string {
+        $clientId = App::config('clientId');
+        $clientSecret = App::config('clientSecret');
+        if ($clientId !== null && $clientSecret !== null) {
+            $params = array(
+                "client_id" => $clientId,
+                "redirect_uri" => $clientSecret,
+                "scope" => $scope
+            );
+            return http_build_query($params);
+        } else {
+            return null;
+        }
+    }
+
     public static function fulltext(Context $ctx, string $terms): ImmVector<Document> {
         return  $ctx->getApi()
                    ->forms()
