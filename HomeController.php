@@ -14,8 +14,17 @@ class HomeController extends GetController {
 
     protected function renderMain(): :xhp {
         $ctx = parent::getContext();
-        $documents = $ctx->getApi()->forms()->at('everything')->ref($ctx->getRef())->submit();
+        $page = parent::getRequest()->getParams()->get('page');
+        $page = !is_null($page) ? (int)$page : 1;
+        $response = $ctx->getApi()
+                         ->forms()
+                         ->at('everything')
+                         ->ref($ctx->getRef())
+                         ->pageSize(10)
+                         ->page($page)
+                         ->submit();
 
+        $documents = $response->getResults();
         $found = "No documents found";
         if($documents->count() == 1) {
             $found = "One document found";
@@ -30,9 +39,23 @@ class HomeController extends GetController {
             $list->appendChild(<li>{$link}</li>);
         }
 
-        return <div>
-        <h2>{$found}</h2>
-        {$list}
-        </div>;
+        $pagination = <div></div>;
+
+        if($response->getPrevPage() !== null) {
+            $href = Routes::index($ctx->getRef(), $response->getPage() - 1);
+            $pagination->appendChild(<a href={$href}>Previous</a>)->appendChild(" ");
+        }
+
+        if($response->getNextPage() !== null) {
+            $href = Routes::index($ctx->getRef(), $response->getPage() + 1);
+            $pagination->appendChild(<a href={$href}>Next</a>);
+        }
+
+        return
+            <div>
+              <h2>{$found}</h2>
+              {$list}
+              {$pagination}
+            </div>;
     }
 }

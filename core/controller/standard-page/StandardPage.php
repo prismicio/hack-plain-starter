@@ -35,11 +35,42 @@ trait StandardPage {
           </form>;
   }
 
-  final private function renderToolbar(): :xhp {
-    return
-      <div id="toolbar">
-          TOOLBAR
-      </div>;
+  final private function renderToolbar(Context $ctx): :xhp {
+
+
+      $refNotFound = $ctx->getApi()->refs()->filter($ref ==> $ref->getRef() == $ctx->getRef())->isEmpty();
+
+      $master = <option>?</option>;
+      if(!$refNotFound) {
+          $master = <option value="">As currently seen by guest visitors</option>;
+          if($ctx->getRef() == $ctx->getApi()->master()->getRef()) {
+              $master->setAttribute('selected', 'selected');
+          }
+      }
+
+      $exceptMaster = $ctx->getApi()->refs()->filter($ref ==> !$ref->isMasterRef());
+      $exceptMaster = $exceptMaster->map($ref ==> {
+          $option = <option value={$ref->getRef()}>As {$ref->getLabel()} {$ref->getScheduledAt()} </option>;
+          if($ctx->getRef() == $ref->getRef()) {
+              $option->setAttribute('selected', 'selected');
+          }
+          return $option;
+      })->toArray();
+
+      return
+          <div id="toolbar">
+            <div id="toolbar">
+              <form method="get">
+                <label for="releaseSelector">See this website: </label>
+                <select id="releaseSelector" name="ref" onchange="this.form.submit()">
+                  {$master}
+                  <optgroup label="Or preview the website in a future release:">
+                    {$exceptMaster}
+                  </optgroup>
+                </select>
+              </form>
+            </div>
+          </div>;
   }
 
   final private function renderFooter(Context $ctx): :xhp {
@@ -54,12 +85,15 @@ trait StandardPage {
     return
      <div>
        <header>
-         {$this->renderToolbar()}
-       </header>
+         {$this->renderToolbar($ctx)}
+         <hr/>
          {$this->renderSearch($ctx->getRef())}
+       </header>
+       <hr/>
        <div class="main">
          {$this->renderMain()}
        </div>
+       <hr/>
        <footer>
          {$this->renderFooter($ctx)}
        </footer>

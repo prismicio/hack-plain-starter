@@ -11,4 +11,8 @@
 
 require_once 'DetailController.php';
 
-DetailController::go($_GET, $_COOKIE);
+try {
+    DetailController::go($_GET, $_COOKIE);
+} catch(Guzzle\Http\Exception\BadResponseException $e) {
+    Prismic::handleHttpException($e);
+}

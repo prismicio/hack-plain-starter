@@ -9,7 +9,10 @@
  *
  */
 
+require_once $_SERVER['DOCUMENT_ROOT'].'/core/prismic/init.php';
 require_once $_SERVER['DOCUMENT_ROOT'].'/core/routes/init.php';
 
+$request = new Request(Map::fromArray($_GET)->toImmMap(), Map::fromArray($_COOKIE)->toImmMap());
+$ctx = Prismic::buildContext($request);
 setcookie('ACCESS_TOKEN', "", time() - 1, '/');
 header('Location: ' . Routes::index());

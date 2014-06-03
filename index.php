@@ -11,4 +11,8 @@
 
 require_once 'HomeController.php';
 
-HomeController::go($_GET, $_COOKIE);
+try {
+    HomeController::go($_GET, $_COOKIE);
+} catch(Guzzle\Http\Exception\BadResponseException $e) {
+    Prismic::handleHttpException($e);
+}

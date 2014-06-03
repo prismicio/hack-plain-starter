@@ -56,25 +56,26 @@ final class Prismic {
 
     public static function fulltext(Context $ctx, string $terms): ImmVector<Document> {
         return  $ctx->getApi()
-                   ->forms()
-                   ->at('everything')
-                   ->query('[[:d = fulltext(document, "' . $terms . '")]]')
-                   ->ref($ctx->getRef())
-                   ->submit();
+                    ->forms()
+                    ->at('everything')
+                    ->query('[[:d = fulltext(document, "' . $terms . '")]]')
+                    ->ref($ctx->getRef())
+                    ->submit()
+                    ->getResults();
     }
 
     public static function getDocument(Context $ctx, string $id): ?Document {
         $results = $ctx->getApi()
-                   ->forms()
-                   ->at('everything')
-                   ->query('[[:d = at(document.id, "'. $id .'")]]')
-                   ->ref($ctx->getRef())
-                   ->submit();
+                       ->forms()
+                       ->at('everything')
+                       ->query('[[:d = at(document.id, "'. $id .'")]]')
+                       ->ref($ctx->getRef())
+                       ->submit()
+                       ->getResults();
         return $results->get(0);
     }
 
-    public static function buildContext(Request $request): Context
-    {
+    public static function buildContext(Request $request): Context {
         $permanentToken = App::config('prismic.token');
         $accessToken = $request->getCookies()->get('ACCESS_TOKEN');
         $token = !is_null($accessToken) ? $accessToken : $permanentToken;
@@ -84,5 +85,25 @@ final class Prismic {
         $ref = !is_null($givenRef) ? $givenRef : $api->master()->getRef();
         $linkResolver = new LinkResolver((string)$ref);
         return new Context($api, (string)$ref, (string)$token, $linkResolver);
+    }
+
+    public static function handleHttpException(mixed $e): void
+    {
+        // UNSAFE
+        $response = $e->getResponse();
+        if ($response->getStatusCode() == 403) {
+            header('Location: ' . Routes::signin());
+            exit('Forbidden');
+        } elseif ($response->getStatusCode() == 401) {
+            setcookie('ACCESS_TOKEN', "", time() - 1);
+            header('Location: ' . Routes::index());
+            exit('Unauthorized');
+        } elseif ($response->getStatusCode() == 404) {
+            header("HTTP/1.0 404 Not Found");
+            exit("Not Found");
+        } else {
+            echo $response->getStatusCode();
+            exit($response->getStatusCode());
+        }
     }
 }

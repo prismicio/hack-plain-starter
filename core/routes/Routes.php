@@ -16,12 +16,16 @@ class Routes
         return $protocol . '://' . $host;
     }
 
-    public static function index(?string $ref = null): string
+    public static function index(?string $ref = null, int $page = 1): string
     {
         $parameters = Map {};
-        if (!is_null($ref)) {
+
+        if ($ref !== null) {
             $parameters->set('ref', $ref);
         }
+
+        $parameters->set('page', (string)$page);
+
         $queryString = (string)http_build_query($parameters);
 
         return self::baseUrl() . '/index.php?' . $queryString;
