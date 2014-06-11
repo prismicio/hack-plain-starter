@@ -37,54 +37,57 @@ trait StandardPage {
 
   final private function renderToolbar(Context $ctx, Request $request): :xhp {
 
+      if($ctx->hasPrivilegedAccess()) {
+          $refNotFound = $ctx->getApi()->refs()->filter($ref ==> $ref->getRef() == $ctx->getRef())->isEmpty();
 
-      $refNotFound = $ctx->getApi()->refs()->filter($ref ==> $ref->getRef() == $ctx->getRef())->isEmpty();
-
-      $master = <option>?</option>;
-      if(!$refNotFound) {
-          $master = <option value="">As currently seen by guest visitors</option>;
-          if($ctx->getRef() == $ctx->getApi()->master()->getRef()) {
-              $master->setAttribute('selected', 'selected');
+          $master = <option>?</option>;
+          if(!$refNotFound) {
+              $master = <option value="">As currently seen by guest visitors</option>;
+              if($ctx->getRef() == $ctx->getApi()->master()->getRef()) {
+                  $master->setAttribute('selected', 'selected');
+              }
           }
-      }
 
-      $exceptMaster = $ctx->getApi()->refs()->filter($ref ==> !$ref->isMasterRef());
-      $exceptMaster = $exceptMaster->map($ref ==> {
-          $option = <option value={$ref->getRef()}>As {$ref->getLabel()} {$ref->getScheduledAt()} </option>;
-          if($ctx->getRef() == $ref->getRef()) {
-              $option->setAttribute('selected', 'selected');
+          $exceptMaster = $ctx->getApi()->refs()->filter($ref ==> !$ref->isMasterRef());
+          $exceptMaster = $exceptMaster->map($ref ==> {
+              $option = <option value={$ref->getRef()}>As {$ref->getLabel()} {$ref->getScheduledAt()} </option>;
+              if($ctx->getRef() == $ref->getRef()) {
+                  $option->setAttribute('selected', 'selected');
+              }
+              return $option;
+          })->toArray();
+
+
+          $extraParams = <span></span>;
+
+          $id = $request->getParams()->get('id');
+          if($id !== null) {
+              $extraParams->appendChild(<input type="hidden" name="id" value={$id} />);
           }
-          return $option;
-      })->toArray();
 
+          $slug = $request->getParams()->get('slug');
+          if($slug != null) {
+              $extraParams->appendChild(<input type="hidden" name="slug" value={$slug} />);
+          }
 
-      $extraParams = <span></span>;
-
-      $id = $request->getParams()->get('id');
-      if($id !== null) {
-          $extraParams->appendChild(<input type="hidden" name="id" value={$id} />);
+          return
+              <div id="toolbar">
+                <div id="toolbar">
+                  <form method="get">
+                    <label for="releaseSelector">See this website: </label>
+                    <select id="releaseSelector" name="ref" onchange="this.form.submit()">
+                      {$master}
+                      <optgroup label="Or preview the website in a future release:">
+                        {$exceptMaster}
+                      </optgroup>
+                    </select>
+                    {$extraParams->getChildren()}
+                  </form>
+                </div>
+              </div>;
+      } else {
+          return <span></span>;
       }
-
-      $slug = $request->getParams()->get('slug');
-      if($slug != null) {
-          $extraParams->appendChild(<input type="hidden" name="slug" value={$slug} />);
-      }
-
-      return
-          <div id="toolbar">
-            <div id="toolbar">
-              <form method="get">
-                <label for="releaseSelector">See this website: </label>
-                <select id="releaseSelector" name="ref" onchange="this.form.submit()">
-                  {$master}
-                  <optgroup label="Or preview the website in a future release:">
-                    {$exceptMaster}
-                  </optgroup>
-                </select>
-                {$extraParams->getChildren()}
-              </form>
-            </div>
-          </div>;
   }
 
   final private function renderFooter(Context $ctx): :xhp {
